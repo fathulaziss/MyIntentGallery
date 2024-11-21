@@ -1,5 +1,7 @@
 package com.example.myintentgallery;
 
+import static com.example.myintentgallery.Utils.getImageUri;
+
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -19,6 +21,9 @@ public class MainActivity extends AppCompatActivity {
 
     // Declare the ActivityResultLauncher for the gallery
     private ActivityResultLauncher<PickVisualMediaRequest> launcherGallery;
+
+    // Declare the ActivityResultLauncher for camera
+    private ActivityResultLauncher<Uri> launcherIntentCamera;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +46,18 @@ public class MainActivity extends AppCompatActivity {
                 }
         );
 
+        // Initialize the launcher for taking a picture with the camera
+        launcherIntentCamera = registerForActivityResult(
+                new ActivityResultContracts.TakePicture(),
+                isSuccess -> {
+                    if (isSuccess) {
+                        showImage();
+                    } else {
+                        currentImageUri = null;
+                    }
+                }
+        );
+
         // Set onClickListeners for each button
         binding.galleryButton.setOnClickListener(v -> startGallery());
 
@@ -58,7 +75,10 @@ public class MainActivity extends AppCompatActivity {
 
     // Method for the camera button
     private void startCamera() {
-        Toast.makeText(this, "Fitur ini belum tersedia", Toast.LENGTH_SHORT).show();
+        currentImageUri = getImageUri(this);
+        if (currentImageUri != null) {
+            launcherIntentCamera.launch(currentImageUri);
+        }
     }
 
     // Method for the CameraX button
