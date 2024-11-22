@@ -11,6 +11,7 @@ import android.util.Log;
 import androidx.core.content.FileProvider;
 
 import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -54,4 +55,11 @@ public class Utils {
                 imageFile
         );
     }
+
+    public static File createCustomTempFile(Context context) throws IOException {
+        File filesDir = context.getExternalCacheDir();
+        String timeStamp = String.valueOf(System.currentTimeMillis()); // or use any other timestamp logic
+        return File.createTempFile(timeStamp, ".jpg", filesDir);
+    }
+
 }
